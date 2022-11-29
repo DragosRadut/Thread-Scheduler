@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -g -fPIC -m32 -Wall -pthread
-LDFLAGS = -m32
+CFLAGS = -g -fPIC -Wall -pthread
+LDFLAGS =
 
 .PHONY: build
 build: libscheduler.so
