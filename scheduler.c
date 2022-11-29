@@ -32,32 +32,42 @@ int so_signal(unsigned int io) {
 
 }
 
-struct arg{
+typedef struct {
 	so_handler *func;
 	unsigned int prio;
-};
+} thread_info;
 
-void *start_thread(void *params) {
-	struct arg *args = params;
-	so_handler *func = args->func;
-	func(args->prio);
-	//pthread_exit(NULL);
+// using pthread_create documentation model
+static void *thread_start(void *arg) {
+	thread_info *th_arg = arg;
+	so_handler *func = th_arg->func;
+	func(th_arg->prio);
+	free(th_arg);
 	return NULL;
 }
 
 tid_t so_fork(so_handler *func, unsigned int priority) {
 	if(func == NULL  || priority > 5)
 		return NULL;
-	// new thread
-	struct arg *new_thread = malloc(sizeof(struct arg));
-	new_thread->func = func;
-	new_thread->prio = priority;
-	void *aux;
+	
+	// create and pass thread info
+	thread_info *new_info = malloc(sizeof(*new_info));
 	pthread_t tid;
-	//start_thread(new_thread);
-	if(pthread_create(&tid, NULL, start_thread, (void*)new_thread) < 0)
+	new_info->func = func;
+	new_info->prio = priority;
+	// create -> tid = id; NULL = def attr; thread_start func; func params
+	if(pthread_create(&tid, NULL, thread_start, (void*)new_info) < 0)
 		return INVALID_TID;
-	pthread_join(tid, NULL); // work in progress
+	
+	// new thread
+	my_thread *new_thread = malloc(sizeof(*new_thread));
+	new_thread->tid = tid;
+	new_thread->func = func;
+	new_thread->priority = priority;
+	
+	if(sch.running == NULL)
+		pthread_join(tid, NULL); // w8 for thread tid to terminate
+	free(new_thread);
 	return tid;
 }
 
