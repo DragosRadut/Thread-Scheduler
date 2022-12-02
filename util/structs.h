@@ -4,16 +4,19 @@ typedef struct {
 	pthread_t tid;
 	unsigned int priority;
 	so_handler *func;
+	pthread_cond_t cond; 
+	unsigned int clk;
 } my_thread;
 
-typedef struct {
-	struct node *next;
-	my_thread *val;
+typedef struct node {
+	my_thread* data;
+	struct node* next;
 } node;
 
-typedef struct {
-	node *head;
-	node *tail;
+typedef struct queue {
+	int size;
+	node* head;
+	node* tail;
 } queue;
 
 typedef struct {
@@ -22,5 +25,4 @@ typedef struct {
 	unsigned int sched_io;
 	my_thread *running;
 	queue waiting;
-	queue ready[6];
 } my_scheduler;
