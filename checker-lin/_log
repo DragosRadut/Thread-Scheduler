@@ -1,171 +1,150 @@
-==46664== Memcheck, a memory error detector
-==46664== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==46664== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
-==46664== Command: ./_test/run_test 20
-==46664== Parent PID: 46663
-==46664== 
-==46664== Thread 2:
-==46664== Invalid write of size 8
-==46664==    at 0x484B506: add_rdy (scheduler.c:58)
-==46664==    by 0x484B970: so_exec (scheduler.c:162)
-==46664==    by 0x10B361: test_sched_handler_21 (test_io.c:181)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664==  Address 0x4a70bb8 is 0 bytes after a block of size 8 alloc'd
-==46664==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x484B433: add_rdy (scheduler.c:47)
-==46664==    by 0x484B970: so_exec (scheduler.c:162)
-==46664==    by 0x10B361: test_sched_handler_21 (test_io.c:181)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664== 
-==46664== 
-==46664== HEAP SUMMARY:
-==46664==     in use at exit: 1,640 bytes in 20 blocks
-==46664==   total heap usage: 20 allocs, 0 frees, 1,640 bytes allocated
-==46664== 
-==46664== Thread 1:
-==46664== 8 bytes in 1 blocks are still reachable in loss record 1 of 15
-==46664==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x484B433: add_rdy (scheduler.c:47)
-==46664==    by 0x484B901: so_fork (scheduler.c:149)
-==46664==    by 0x10B335: test_sched_handler_21 (test_io.c:177)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664== 
-==46664== 8 bytes in 1 blocks are still reachable in loss record 2 of 15
-==46664==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x484B433: add_rdy (scheduler.c:47)
-==46664==    by 0x484B901: so_fork (scheduler.c:149)
-==46664==    by 0x10B346: test_sched_handler_21 (test_io.c:178)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664== 
-==46664== 8 bytes in 1 blocks are still reachable in loss record 3 of 15
-==46664==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x484B433: add_rdy (scheduler.c:47)
-==46664==    by 0x484B901: so_fork (scheduler.c:149)
-==46664==    by 0x10B357: test_sched_handler_21 (test_io.c:179)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664== 
-==46664== 8 bytes in 1 blocks are still reachable in loss record 4 of 15
-==46664==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x484B433: add_rdy (scheduler.c:47)
-==46664==    by 0x484B970: so_exec (scheduler.c:162)
-==46664==    by 0x10B35C: test_sched_handler_21 (test_io.c:180)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664== 
-==46664== 8 bytes in 1 blocks are still reachable in loss record 5 of 15
-==46664==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x484B433: add_rdy (scheduler.c:47)
-==46664==    by 0x484B970: so_exec (scheduler.c:162)
-==46664==    by 0x10B361: test_sched_handler_21 (test_io.c:181)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664== 
-==46664== 48 bytes in 1 blocks are still reachable in loss record 6 of 15
-==46664==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x484B314: so_init (scheduler.c:23)
-==46664==    by 0x10B570: test_sched_21 (test_io.c:223)
-==46664==    by 0x10962B: main (run_test.c:120)
-==46664== 
-==46664== 80 bytes in 1 blocks are still reachable in loss record 7 of 15
-==46664==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x484B869: so_fork (scheduler.c:135)
-==46664==    by 0x10B581: test_sched_21 (test_io.c:225)
-==46664==    by 0x10962B: main (run_test.c:120)
-==46664== 
-==46664== 80 bytes in 1 blocks are still reachable in loss record 8 of 15
-==46664==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x484B869: so_fork (scheduler.c:135)
-==46664==    by 0x10B335: test_sched_handler_21 (test_io.c:177)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664== 
-==46664== 80 bytes in 1 blocks are still reachable in loss record 9 of 15
-==46664==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x484B869: so_fork (scheduler.c:135)
-==46664==    by 0x10B346: test_sched_handler_21 (test_io.c:178)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664== 
-==46664== 80 bytes in 1 blocks are still reachable in loss record 10 of 15
-==46664==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x484B869: so_fork (scheduler.c:135)
-==46664==    by 0x10B357: test_sched_handler_21 (test_io.c:179)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664== 
-==46664== 144 bytes in 6 blocks are still reachable in loss record 11 of 15
-==46664==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x484B34F: so_init (scheduler.c:25)
-==46664==    by 0x10B570: test_sched_21 (test_io.c:223)
-==46664==    by 0x10962B: main (run_test.c:120)
-==46664== 
-==46664== 272 bytes in 1 blocks are possibly lost in loss record 12 of 15
-==46664==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x40149CA: allocate_dtv (dl-tls.c:286)
-==46664==    by 0x40149CA: _dl_allocate_tls (dl-tls.c:532)
-==46664==    by 0x4863322: allocate_stack (allocatestack.c:622)
-==46664==    by 0x4863322: pthread_create@@GLIBC_2.2.5 (pthread_create.c:660)
-==46664==    by 0x484B8CD: so_fork (scheduler.c:143)
-==46664==    by 0x10B581: test_sched_21 (test_io.c:225)
-==46664==    by 0x10962B: main (run_test.c:120)
-==46664== 
-==46664== 272 bytes in 1 blocks are possibly lost in loss record 13 of 15
-==46664==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x40149CA: allocate_dtv (dl-tls.c:286)
-==46664==    by 0x40149CA: _dl_allocate_tls (dl-tls.c:532)
-==46664==    by 0x4863322: allocate_stack (allocatestack.c:622)
-==46664==    by 0x4863322: pthread_create@@GLIBC_2.2.5 (pthread_create.c:660)
-==46664==    by 0x484B8CD: so_fork (scheduler.c:143)
-==46664==    by 0x10B335: test_sched_handler_21 (test_io.c:177)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664== 
-==46664== 272 bytes in 1 blocks are possibly lost in loss record 14 of 15
-==46664==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x40149CA: allocate_dtv (dl-tls.c:286)
-==46664==    by 0x40149CA: _dl_allocate_tls (dl-tls.c:532)
-==46664==    by 0x4863322: allocate_stack (allocatestack.c:622)
-==46664==    by 0x4863322: pthread_create@@GLIBC_2.2.5 (pthread_create.c:660)
-==46664==    by 0x484B8CD: so_fork (scheduler.c:143)
-==46664==    by 0x10B346: test_sched_handler_21 (test_io.c:178)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664== 
-==46664== 272 bytes in 1 blocks are possibly lost in loss record 15 of 15
-==46664==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==46664==    by 0x40149CA: allocate_dtv (dl-tls.c:286)
-==46664==    by 0x40149CA: _dl_allocate_tls (dl-tls.c:532)
-==46664==    by 0x4863322: allocate_stack (allocatestack.c:622)
-==46664==    by 0x4863322: pthread_create@@GLIBC_2.2.5 (pthread_create.c:660)
-==46664==    by 0x484B8CD: so_fork (scheduler.c:143)
-==46664==    by 0x10B357: test_sched_handler_21 (test_io.c:179)
-==46664==    by 0x484B807: thread_start (scheduler.c:118)
-==46664==    by 0x4862608: start_thread (pthread_create.c:477)
-==46664==    by 0x499E292: clone (clone.S:95)
-==46664== 
-==46664== LEAK SUMMARY:
-==46664==    definitely lost: 0 bytes in 0 blocks
-==46664==    indirectly lost: 0 bytes in 0 blocks
-==46664==      possibly lost: 1,088 bytes in 4 blocks
-==46664==    still reachable: 552 bytes in 16 blocks
-==46664==         suppressed: 0 bytes in 0 blocks
-==46664== 
-==46664== For lists of detected and suppressed errors, rerun with: -s
-==46664== ERROR SUMMARY: 5 errors from 5 contexts (suppressed: 0 from 0)
+==209025== Memcheck, a memory error detector
+==209025== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==209025== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==209025== Command: ./_test/run_test 20
+==209025== Parent PID: 209024
+==209025== 
+==209025== Thread 3:
+==209025== Invalid write of size 8
+==209025==    at 0x484BB71: so_wait (scheduler.c:162)
+==209025==    by 0x10B4BA: test_sched_handler_21 (test_io.c:206)
+==209025==    by 0x484BD64: thread_start (scheduler.c:219)
+==209025==    by 0x4862608: start_thread (pthread_create.c:477)
+==209025==    by 0x499E292: clone (clone.S:95)
+==209025==  Address 0x4a708d8 is 0 bytes after a block of size 8 alloc'd
+==209025==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x484BB47: so_wait (scheduler.c:159)
+==209025==    by 0x10B4BA: test_sched_handler_21 (test_io.c:206)
+==209025==    by 0x484BD64: thread_start (scheduler.c:219)
+==209025==    by 0x4862608: start_thread (pthread_create.c:477)
+==209025==    by 0x499E292: clone (clone.S:95)
+==209025== 
+==209025== Conditional jump or move depends on uninitialised value(s)
+==209025==    at 0x484BB87: so_wait (scheduler.c:164)
+==209025==    by 0x10B4BA: test_sched_handler_21 (test_io.c:206)
+==209025==    by 0x484BD64: thread_start (scheduler.c:219)
+==209025==    by 0x4862608: start_thread (pthread_create.c:477)
+==209025==    by 0x499E292: clone (clone.S:95)
+==209025== 
+==209025== Invalid write of size 8
+==209025==    at 0x484BB97: so_wait (scheduler.c:165)
+==209025==    by 0x10B4BA: test_sched_handler_21 (test_io.c:206)
+==209025==    by 0x484BD64: thread_start (scheduler.c:219)
+==209025==    by 0x4862608: start_thread (pthread_create.c:477)
+==209025==    by 0x499E292: clone (clone.S:95)
+==209025==  Address 0x4a70050 is 8 bytes after a block of size 8 alloc'd
+==209025==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x484B8AC: so_init (scheduler.c:119)
+==209025==    by 0x10B570: test_sched_21 (test_io.c:223)
+==209025==    by 0x10962B: main (run_test.c:120)
+==209025== 
+==209025== Invalid read of size 8
+==209025==    at 0x484BBA5: so_wait (scheduler.c:165)
+==209025==    by 0x10B4BA: test_sched_handler_21 (test_io.c:206)
+==209025==    by 0x484BD64: thread_start (scheduler.c:219)
+==209025==    by 0x4862608: start_thread (pthread_create.c:477)
+==209025==    by 0x499E292: clone (clone.S:95)
+==209025==  Address 0x4a70050 is 8 bytes after a block of size 8 alloc'd
+==209025==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x484B8AC: so_init (scheduler.c:119)
+==209025==    by 0x10B570: test_sched_21 (test_io.c:223)
+==209025==    by 0x10962B: main (run_test.c:120)
+==209025== 
+==209025== Invalid write of size 8
+==209025==    at 0x484BBA9: so_wait (scheduler.c:165)
+==209025==    by 0x10B4BA: test_sched_handler_21 (test_io.c:206)
+==209025==    by 0x484BD64: thread_start (scheduler.c:219)
+==209025==    by 0x4862608: start_thread (pthread_create.c:477)
+==209025==    by 0x499E292: clone (clone.S:95)
+==209025==  Address 0x4a70048 is 0 bytes after a block of size 8 alloc'd
+==209025==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x484B8AC: so_init (scheduler.c:119)
+==209025==    by 0x10B570: test_sched_21 (test_io.c:223)
+==209025==    by 0x10962B: main (run_test.c:120)
+==209025== 
+==209025== 
+==209025== HEAP SUMMARY:
+==209025==     in use at exit: 976 bytes in 14 blocks
+==209025==   total heap usage: 18 allocs, 4 frees, 1,032 bytes allocated
+==209025== 
+==209025== Thread 1:
+==209025== 8 bytes in 1 blocks are still reachable in loss record 1 of 9
+==209025==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x484B8AC: so_init (scheduler.c:119)
+==209025==    by 0x10B570: test_sched_21 (test_io.c:223)
+==209025==    by 0x10962B: main (run_test.c:120)
+==209025== 
+==209025== 8 bytes in 1 blocks are definitely lost in loss record 2 of 9
+==209025==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x484BB47: so_wait (scheduler.c:159)
+==209025==    by 0x10B4BA: test_sched_handler_21 (test_io.c:206)
+==209025==    by 0x484BD64: thread_start (scheduler.c:219)
+==209025==    by 0x4862608: start_thread (pthread_create.c:477)
+==209025==    by 0x499E292: clone (clone.S:95)
+==209025== 
+==209025== 16 bytes in 1 blocks are still reachable in loss record 3 of 9
+==209025==    at 0x483DFAF: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x484BE7F: so_fork (scheduler.c:251)
+==209025==    by 0x10B335: test_sched_handler_21 (test_io.c:177)
+==209025==    by 0x484BD64: thread_start (scheduler.c:219)
+==209025==    by 0x4862608: start_thread (pthread_create.c:477)
+==209025==    by 0x499E292: clone (clone.S:95)
+==209025== 
+==209025== 48 bytes in 1 blocks are still reachable in loss record 4 of 9
+==209025==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x484B8C3: so_init (scheduler.c:120)
+==209025==    by 0x10B570: test_sched_21 (test_io.c:223)
+==209025==    by 0x10962B: main (run_test.c:120)
+==209025== 
+==209025== 104 bytes in 1 blocks are still reachable in loss record 5 of 9
+==209025==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x484BDC4: so_fork (scheduler.c:236)
+==209025==    by 0x10B581: test_sched_21 (test_io.c:225)
+==209025==    by 0x10962B: main (run_test.c:120)
+==209025== 
+==209025== 104 bytes in 1 blocks are still reachable in loss record 6 of 9
+==209025==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x484BDC4: so_fork (scheduler.c:236)
+==209025==    by 0x10B335: test_sched_handler_21 (test_io.c:177)
+==209025==    by 0x484BD64: thread_start (scheduler.c:219)
+==209025==    by 0x4862608: start_thread (pthread_create.c:477)
+==209025==    by 0x499E292: clone (clone.S:95)
+==209025== 
+==209025== 144 bytes in 6 blocks are still reachable in loss record 7 of 9
+==209025==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x484B8FE: so_init (scheduler.c:122)
+==209025==    by 0x10B570: test_sched_21 (test_io.c:223)
+==209025==    by 0x10962B: main (run_test.c:120)
+==209025== 
+==209025== 272 bytes in 1 blocks are possibly lost in loss record 8 of 9
+==209025==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x40149CA: allocate_dtv (dl-tls.c:286)
+==209025==    by 0x40149CA: _dl_allocate_tls (dl-tls.c:532)
+==209025==    by 0x4863322: allocate_stack (allocatestack.c:622)
+==209025==    by 0x4863322: pthread_create@@GLIBC_2.2.5 (pthread_create.c:660)
+==209025==    by 0x484BE1E: so_fork (scheduler.c:244)
+==209025==    by 0x10B581: test_sched_21 (test_io.c:225)
+==209025==    by 0x10962B: main (run_test.c:120)
+==209025== 
+==209025== 272 bytes in 1 blocks are possibly lost in loss record 9 of 9
+==209025==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==209025==    by 0x40149CA: allocate_dtv (dl-tls.c:286)
+==209025==    by 0x40149CA: _dl_allocate_tls (dl-tls.c:532)
+==209025==    by 0x4863322: allocate_stack (allocatestack.c:622)
+==209025==    by 0x4863322: pthread_create@@GLIBC_2.2.5 (pthread_create.c:660)
+==209025==    by 0x484BE1E: so_fork (scheduler.c:244)
+==209025==    by 0x10B335: test_sched_handler_21 (test_io.c:177)
+==209025==    by 0x484BD64: thread_start (scheduler.c:219)
+==209025==    by 0x4862608: start_thread (pthread_create.c:477)
+==209025==    by 0x499E292: clone (clone.S:95)
+==209025== 
+==209025== LEAK SUMMARY:
+==209025==    definitely lost: 8 bytes in 1 blocks
+==209025==    indirectly lost: 0 bytes in 0 blocks
+==209025==      possibly lost: 544 bytes in 2 blocks
+==209025==    still reachable: 424 bytes in 11 blocks
+==209025==         suppressed: 0 bytes in 0 blocks
+==209025== 
+==209025== Use --track-origins=yes to see where uninitialised values come from
+==209025== For lists of detected and suppressed errors, rerun with: -s
+==209025== ERROR SUMMARY: 8 errors from 8 contexts (suppressed: 0 from 0)
