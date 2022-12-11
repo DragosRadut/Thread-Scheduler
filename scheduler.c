@@ -34,7 +34,7 @@ void *add_rdy(my_thread *new_th, int front) {
 	return NULL;
 }
 
-my_thread *get_rdy() {
+my_thread *get_rdy(void) {
 	// search for highest prio
 	int prio = 5;
 
@@ -42,6 +42,7 @@ my_thread *get_rdy() {
 		prio--;
 
 	node *rdy = sch.ready[prio]->head;
+
 	if (rdy == NULL)
 		return NULL;
 	my_thread *data = rdy->data;
@@ -61,8 +62,8 @@ my_thread *get_rdy() {
 	return data;
 }
 
-void *schedule() {
-	pthread_mutex_lock (&sch.mutex);
+void *schedule(){
+	pthread_mutex_lock(&sch.mutex);
 	my_thread *prev = sch.running;
 	my_thread *rdy = get_rdy();
 
@@ -78,7 +79,7 @@ void *schedule() {
 		pthread_mutex_unlock(&sch.mutex);
 		return NULL;
 	}
-	
+
 	if (sch.running->clk == sch.sched_quantum) {
 		prev->clk = 0;
 		if (prev->priority > rdy->priority) {
@@ -251,7 +252,7 @@ tid_t so_fork(so_handler *func, unsigned int priority) {
 	pthread_cond_init(&(new_thread->cond), NULL);
 
 	// create -> tid = id; NULL = def attr; thread_start func; func params
-	if (pthread_create(&(new_thread->tid), NULL, thread_start, (void*)new_thread) < 0)
+	if (pthread_create(&(new_thread->tid), NULL, thread_start, (void *)new_thread) < 0)
 		return INVALID_TID;
 
 	// add to thread list
