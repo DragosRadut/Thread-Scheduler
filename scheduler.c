@@ -6,12 +6,6 @@
 
 static my_scheduler sch;
 static int init_protect = 0; 
-static int is_first_thread = 1;
-queue **ready;
-queue *waiting;
-my_thread *running = NULL;
-static int check = 0;
-th_list all;
 
 void *add_rdy(my_thread *new_th, int front) {
 	node* new = malloc(sizeof(*new));
@@ -21,90 +15,103 @@ void *add_rdy(my_thread *new_th, int front) {
 	new->next = NULL;
 
 	int prio = new_th->priority;
-	if(ready[prio]->size == 0) {
-		ready[prio]->head = ready[prio]->tail = new;
-		ready[prio]->size ++;
+	if(sch.ready[prio]->size == 0) {
+		sch.ready[prio]->head = sch.ready[prio]->tail = new;
+		sch.ready[prio]->size ++;
 		return NULL;
 	}
 	
 	if(front) {
-		ready[prio]->head->next = new;
-		ready[prio]->head = new;
+		sch.ready[prio]->head->next = new;
+		sch.ready[prio]->head = new;
 	} else {
-		new->next = ready[prio]->tail;
-		ready[prio]->tail = new;
+		new->next = sch.ready[prio]->tail;
+		sch.ready[prio]->tail = new;
 	}
-	ready[prio]->size ++;
+	sch.ready[prio]->size ++;
 	return NULL;
 }
 
-my_thread *get_rdy() { //TODO: remove prio
+my_thread *get_rdy() { 
 	// search for highest prio
 	int prio = 5;
-	while(ready[prio]->size == 0 && prio > 0)
+	while (sch.ready[prio]->size == 0 && prio > 0)
 		prio --;
 
-	node *rdy = ready[prio]->head;
-	if(rdy == NULL) {
+	node *rdy = sch.ready[prio]->head;
+	if (rdy == NULL) {
 		return NULL;
 	}
 	my_thread *data = rdy->data;
 	free(rdy);
-	if(ready[prio]->size == 1) {
-		ready[prio]->head = ready[prio]->tail = NULL;
-		ready[prio]->size --;
+	if(sch.ready[prio]->size == 1) {
+		sch.ready[prio]->head = sch.ready[prio]->tail = NULL;
+		sch.ready[prio]->size --;
 		return data;
 	}
-	node *aux = ready[prio]->tail;
+	node *aux = sch.ready[prio]->tail;
 	while(aux->next != rdy) {
 		aux = aux->next;
 	}
-	ready[prio]->head = aux;
+	sch.ready[prio]->head = aux;
 	aux->next = NULL;
-	ready[prio]->size --;
+	sch.ready[prio]->size --;
 	
 	return data;
 }
 
-
 void *schedule() {
-	my_thread *prev = running;
-	my_thread *ready = get_rdy();
-	if(ready != NULL && ready != prev) {
-		pthread_mutex_lock(&sch.mutex);
-		check = 1;
-		running = ready;
-		pthread_cond_signal(&(ready->cond));
-		if(prev != NULL && prev != ready && prev->state != TERM) {
-			pthread_cond_wait(&(prev->cond), &sch.mutex);
-			// check--;
-		}
-		pthread_mutex_unlock(&sch.mutex);
-	} 
-	return NULL;
-}
+	pthread_mutex_lock(&sch.mutex);
+	my_thread *prev = sch.running;
+	my_thread *rdy = get_rdy();
 
-void check_preempt() {
-	my_thread *next = get_rdy();
-	if(next) {
-		if(running->clk == sch.sched_quantum) {
-			running->clk = 0;
-			running->has_preempt = 1;
-			add_rdy(running, 0);
-			add_rdy(next, 1);
-			schedule();
-		} else if(running->priority < next->priority) { //preempt
-			running->has_preempt = 1;
-			running->clk = 0;
-			add_rdy(running, 0);
-			add_rdy(next, 1); // add back to front
-			
-			schedule();
-		} 
-		else {
-			add_rdy(next, 1);
-		} 
+	if(rdy == NULL) {
+		pthread_mutex_unlock(&sch.mutex);
+		return NULL;
 	}
+
+	if(prev == NULL) {
+		rdy->state = RUN;
+		sch.running = rdy;
+		pthread_cond_signal(&(rdy->cond));
+		pthread_mutex_unlock(&sch.mutex);
+		return NULL;
+	}
+	
+	if(sch.running->clk == sch.sched_quantum) {
+		prev->clk = 0;
+		if(prev->priority > rdy->priority) {
+			add_rdy(rdy, 1);
+			pthread_mutex_unlock(&sch.mutex);
+			return NULL;
+		}
+		prev->state = RDY;
+		add_rdy(prev, 0);
+		sch.running = rdy;
+		rdy->state = RUN;
+		pthread_cond_signal(&(rdy->cond));
+		while (prev->state != RUN)
+			pthread_cond_wait(&(prev->cond), &sch.mutex);
+		pthread_mutex_unlock(&sch.mutex);
+		return NULL;
+	}
+
+	if(sch.running->priority < rdy->priority) {
+		sch.running->clk = 0;
+		prev->state = RDY;
+		sch.running = rdy;
+		add_rdy(prev, 0);
+		rdy->state = RUN;
+		pthread_cond_signal(&(rdy->cond));
+		while (prev->state != RUN)
+			pthread_cond_wait(&(prev->cond), &sch.mutex);
+		pthread_mutex_unlock(&sch.mutex);
+		return NULL;
+	}
+
+	add_rdy(rdy, 1);
+	pthread_mutex_unlock(&sch.mutex);
+	return NULL;
 }
 
 int so_init(unsigned int quantum, unsigned int io) {
@@ -113,64 +120,81 @@ int so_init(unsigned int quantum, unsigned int io) {
 		return -1;
 	init_protect = 1; // protect double init
 
-	// init mutex
 	sch.sched_quantum = quantum;
 	sch.sched_io = io;
-	waiting = malloc(sizeof(queue *));
-	ready = malloc(6 * sizeof(queue*));
+	sch.running = NULL;
+
+	sch.ready = malloc(6 * sizeof(queue*));
 	for(int i = 0; i < 6; i++) {
-		ready[i] = malloc(sizeof(queue));
-		ready[i]->size = 0;
-		ready[i]->head = ready[i]->tail = NULL;
+		sch.ready[i] = malloc(sizeof(queue));
+		sch.ready[i]->size = 0;
+		sch.ready[i]->head = sch.ready[i]->tail = NULL;
 	}
+
 	return pthread_mutex_init(&sch.mutex, NULL);
 }
 
 void so_end() {
-	if(init_protect) { 
-		for(int i = all.no_of_th - 1; i >= 0; i--) {
-			if(all.threads[i]->state != TERM) 
-				pthread_join(all.threads[i]->tid, NULL);
-			pthread_cond_destroy(&(all.threads[i]->cond));
-			free(all.threads[i]);
+	if(init_protect) {
+		for(int i = 0; i < sch.all.no_of_th; i++) {
+			if(sch.all.threads[i]->state != TERM) {
+				pthread_join(sch.all.threads[i]->tid, NULL);
+			}
+			pthread_cond_destroy(&(sch.all.threads[i]->cond));
+			free(sch.all.threads[i]);
 		}
+		free(sch.all.threads);
+	
 		for(int i = 0; i < 6; i++) {
-			node *aux = ready[i]->tail;
+			node *aux = sch.ready[i]->tail;
 			while(aux) {
 				node *temp = aux;
 				aux = aux->next;
 				free(temp);
 			}
-			free(ready[i]);
+			free(sch.ready[i]);
 		}
-		free(ready);
-		free(waiting);
+		free(sch.ready);
+
+		for(int i = 0; i < sch.waiting.no_of_th; i++)
+			free(sch.waiting.threads[i]);
+		free(sch.waiting.threads);
 	}
 	
 	init_protect = 0;
 	pthread_mutex_destroy(&(sch.mutex));
-
+	return;
 }
 
 int so_wait(unsigned int io) {
 	if(io >= sch.sched_io || io < 0)
 		return -1;
 
-	node* new = malloc(sizeof(node*));
-	running->waiting_io = io;
-	new->data = running;
-	new->next = NULL;
-
-	if(waiting->size == 0) {
-		waiting->head = waiting->tail = new;
+	pthread_mutex_lock(&sch.mutex);
+	// add to waiting list
+	sch.running->waiting_io = io;
+	if(sch.waiting.no_of_th == 0) {
+		sch.waiting.threads = malloc(sizeof(my_thread *));
 	} else {
-		new->next = waiting->tail;
-		waiting->tail = new;
-	} 
-	waiting->size ++;
+		my_thread **temp = realloc(sch.waiting.threads, sizeof(my_thread *) * (sch.waiting.no_of_th + 1));
+		sch.waiting.threads = temp;
+	}
+	sch.waiting.threads[sch.waiting.no_of_th] = sch.running;
+	sch.waiting.no_of_th++;
 
-	running = NULL;
-	schedule();
+	// switch running thread
+	my_thread *prev = sch.running;
+	my_thread *rdy = get_rdy();
+
+	sch.running->clk = 0;
+	prev->state = WAIT;
+	sch.running = rdy;
+	rdy->state = RUN;
+	pthread_cond_signal(&(rdy->cond));
+	while (prev->state != RUN)
+		pthread_cond_wait(&(prev->cond), &sch.mutex);
+	pthread_mutex_unlock(&sch.mutex);
+
 	return 0;
 }
 
@@ -178,54 +202,43 @@ int so_signal(unsigned int io) {
 	if(io >= sch.sched_io || io < 0)
 		return -1;
 	
-	running->clk++;
+	sch.running->clk++;
 	
 	int cnt = 0;
-	node *aux = waiting->tail;
-	node *temp;
-	for(int i = 0; i < waiting->size; i++) {
-		if(aux->data->waiting_io == io) {
+	for(int i = 0; i < sch.waiting.no_of_th; i++) {
+		if(sch.waiting.threads[i] && sch.waiting.threads[i]->waiting_io == io) {
 			cnt ++;
-			temp = aux;
-			add_rdy(aux->data, 0);
-			aux = aux->next;
-			free(temp);
+			add_rdy(sch.waiting.threads[i], 0);
+			sch.waiting.threads[i] = NULL;
 		}
 	}
-	check_preempt();
+	schedule();
 	return cnt;
 }
-
-
 
 // using pthread_create documentation model
 static void *thread_start(void *arg) {
 	my_thread *th_arg = arg;
 	so_handler *func = th_arg->func;
-	
+
 	// context switch
 	pthread_mutex_lock(&sch.mutex);
-	if(!is_first_thread) {
-		while(check == 0)
-			pthread_cond_wait(&(th_arg->cond), &sch.mutex);
-	}
+	while(th_arg->state != RUN)	
+		pthread_cond_wait(&(th_arg->cond), &sch.mutex);
+	sch.running = th_arg;
 	pthread_mutex_unlock(&sch.mutex);
 
-	th_arg->state = RUN;
-	running = th_arg;
-	
-	is_first_thread = 0;
 
 	func(th_arg->priority);
 
+	pthread_mutex_lock(&sch.mutex);
 	th_arg->state = TERM;
-	running = NULL;
+	sch.running = NULL;
+	pthread_mutex_unlock(&sch.mutex);
 	
 	schedule();
-
-	pthread_exit(NULL);
+	return NULL;
 }
-
 
 
 tid_t so_fork(so_handler *func, unsigned int priority) {
@@ -239,35 +252,35 @@ tid_t so_fork(so_handler *func, unsigned int priority) {
 	new_thread->clk = 0;
 	pthread_cond_init(&(new_thread->cond), NULL);
 
-
 	// create -> tid = id; NULL = def attr; thread_start func; func params
 	if(pthread_create(&(new_thread->tid), NULL, thread_start, (void*)new_thread) < 0)
 		return INVALID_TID;
-	
-	// add to thread list
-	if(all.no_of_th == 0) {
-		all.threads = malloc(sizeof(my_thread *));
-	} else {
-		my_thread **temp = realloc(all.threads, sizeof(my_thread *) * (all.no_of_th + 1));
-		all.threads = temp;
-	}
-	all.threads[all.no_of_th] = new_thread;
-	all.no_of_th++;
 
-	if(is_first_thread)
-		pthread_join(new_thread->tid, NULL);
-	else {
-		add_rdy(new_thread, 0); 
-		running->clk ++;
-		check_preempt();
+	// add to thread list
+	pthread_mutex_lock(&sch.mutex);
+	if(sch.all.no_of_th == 0) {
+		sch.all.threads = malloc(sizeof(my_thread *));
+	} else {
+		my_thread **temp = realloc(sch.all.threads, sizeof(my_thread *) * (sch.all.no_of_th + 1));
+		sch.all.threads = temp;
 	}
+	sch.all.threads[sch.all.no_of_th] = new_thread;
+	sch.all.no_of_th++;
+	
+	add_rdy(new_thread, 0); 
+	if(sch.running) {
+		sch.running->clk ++;
+	}
+	pthread_mutex_unlock(&sch.mutex);
+	schedule();
+
 	return new_thread->tid;
 }
 
 void so_exec() {
-	running->clk ++;
-	if(running->clk >= sch.sched_quantum) {
-		check_preempt();
+	sch.running->clk ++;
+	if(sch.running->clk == sch.sched_quantum) {
+		schedule();
 	}
 	return;
 }
