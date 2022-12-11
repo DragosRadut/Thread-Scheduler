@@ -1,11 +1,15 @@
 #include "so_scheduler.h"
-#define RDY 0
-#define RUN 1
-#define TERM -1
-#define DONE 3
-#define WAIT 2
-typedef struct my_thread{
-	int state;
+
+enum state {
+	RDY,
+	RUN,
+	TERM,
+	DONE,
+	WAIT
+};
+
+typedef struct my_thread {
+	enum state state;
 	pthread_t tid;
 	unsigned int priority;
 	so_handler *func;
@@ -15,14 +19,14 @@ typedef struct my_thread{
 } my_thread;
 
 typedef struct node {
-	my_thread* data;
-	struct node* next;
+	my_thread *data;
+	struct node *next;
 } node;
 
 typedef struct queue {
 	int size;
-	node* head;
-	node* tail;
+	node *head;
+	node *tail;
 } queue;
 
 typedef struct th_list {
