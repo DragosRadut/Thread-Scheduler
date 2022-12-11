@@ -46,6 +46,7 @@ my_thread *get_rdy(void) {
 	if (rdy == NULL)
 		return NULL;
 	my_thread *data = rdy->data;
+
 	free(rdy);
 	if (sch.ready[prio]->size == 1) {
 		sch.ready[prio]->head = sch.ready[prio]->tail = NULL;
@@ -62,7 +63,7 @@ my_thread *get_rdy(void) {
 	return data;
 }
 
-void *schedule(){
+void *schedule(void) {
 	pthread_mutex_lock(&sch.mutex);
 	my_thread *prev = sch.running;
 	my_thread *rdy = get_rdy();
@@ -145,7 +146,7 @@ void so_end() {
 			free(sch.all.threads[i]);
 		}
 		free(sch.all.threads);
-	
+
 		for (int i = 0; i < 6; i++) {
 			node *aux = sch.ready[i]->tail;
 			while (aux) {
