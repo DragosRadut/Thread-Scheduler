@@ -16,12 +16,13 @@ void *add_rdy(my_thread *new_th, int front) {
 	new->next = NULL;
 
 	int prio = new_th->priority;
+
 	if (sch.ready[prio]->size == 0) {
 		sch.ready[prio]->head = sch.ready[prio]->tail = new;
-		sch.ready[prio]->size ++;
+		sch.ready[prio]->size++;
 		return NULL;
 	}
-	// front = 1 --> add node to front
+	// front = 1--> add node to front
 	if (front) {
 		sch.ready[prio]->head->next = new;
 		sch.ready[prio]->head = new;
@@ -29,15 +30,16 @@ void *add_rdy(my_thread *new_th, int front) {
 		new->next = sch.ready[prio]->tail;
 		sch.ready[prio]->tail = new;
 	}
-	sch.ready[prio]->size ++;
+	sch.ready[prio]->size++;
 	return NULL;
 }
 
 my_thread *get_rdy() {
 	// search for highest prio
 	int prio = 5;
+
 	while (sch.ready[prio]->size == 0 && prio > 0)
-		prio --;
+		prio--;
 
 	node *rdy = sch.ready[prio]->head;
 	if (rdy == NULL)
@@ -46,17 +48,16 @@ my_thread *get_rdy() {
 	free(rdy);
 	if (sch.ready[prio]->size == 1) {
 		sch.ready[prio]->head = sch.ready[prio]->tail = NULL;
-		sch.ready[prio]->size --;
+		sch.ready[prio]->size--;
 		return data;
 	}
 	node *aux = sch.ready[prio]->tail;
-	while (aux->next != rdy) {
+	while (aux->next != rdy)
 		aux = aux->next;
-	}
 	sch.ready[prio]->head = aux;
 	aux->next = NULL;
-	sch.ready[prio]->size --;
-	
+	sch.ready[prio]->size--;
+
 	return data;
 }
 
@@ -124,7 +125,7 @@ int so_init(unsigned int quantum, unsigned int io) {
 	sch.sched_io = io;
 	sch.running = NULL;
 
-	sch.ready = malloc(6 * sizeof(queue*));
+	sch.ready = malloc(6 * sizeof(queue *));
 	for (int i = 0; i < 6; i++) {
 		sch.ready[i] = malloc(sizeof(queue));
 		sch.ready[i]->size = 0;
@@ -205,7 +206,7 @@ int so_signal(unsigned int io) {
 	int cnt = 0;
 	for (int i = 0; i < sch.waiting.no_of_th; i++) {
 		if (sch.waiting.threads[i] && sch.waiting.threads[i]->waiting_io == io) {
-			cnt ++;
+			cnt++;
 			add_rdy(sch.waiting.threads[i], 0);
 			sch.waiting.threads[i] = NULL;
 		}
@@ -266,7 +267,7 @@ tid_t so_fork(so_handler *func, unsigned int priority) {
 
 	add_rdy(new_thread, 0); 
 	if (sch.running)
-		sch.running->clk ++;
+		sch.running->clk++;
 	pthread_mutex_unlock(&sch.mutex);
 	schedule();
 
@@ -274,8 +275,7 @@ tid_t so_fork(so_handler *func, unsigned int priority) {
 }
 
 void so_exec () {
-	sch.running->clk ++;
+	sch.running->clk++;
 	if (sch.running->clk == sch.sched_quantum)
 		schedule();
-	return;
 }
