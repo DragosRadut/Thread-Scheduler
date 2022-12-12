@@ -13,25 +13,25 @@ Prin implementarea planificatorului se simuleaza un scheduler preemptiv intr-un 
 ### Thread struct
 ```
 typedef struct my_thread {
-	enum state state; // thread state : RDY, RUN, TERM, WAIT
-	pthread_t tid; // thread id
+	enum state state; 	// thread state : RDY, RUN, TERM, WAIT
+	pthread_t tid; 		// thread id
 	unsigned int priority;
-	so_handler *func; // thread specific routine
-	pthread_cond_t cond; // thread specific condition variable
-	unsigned int clk; // time quantum clock
-	int waiting_io; // waiting event
+	so_handler *func;	// thread specific routine
+	pthread_cond_t cond; 	// thread specific condition variable
+	unsigned int clk;	// time quantum clock
+	int waiting_io; 	// waiting event
 } my_thread;
 ```
 ### Scheduler struct 
 ```
 typedef struct {
-	pthread_mutex_t mutex; // general mutex
+	pthread_mutex_t mutex; 	// general mutex
 	unsigned int sched_quantum;
 	unsigned int sched_io; 
-	my_thread *running; // pointer to running thread
-	th_list waiting; // waiting list
-	queue **ready; // ready queues
-	th_list all; // all thread list
+	my_thread *running; 	// pointer to running thread
+	th_list waiting; 	// waiting list
+	queue **ready; 		// ready queues
+	th_list all; 		// all thread list
 } my_scheduler;
 ```
 
