@@ -48,7 +48,11 @@ Porneste un nou thread, initializand membrii specifici structurii. Se foloseste 
 Trece thread-ul in asteptarea semnalui de executie. Dupa ce va trece in starea RUN, va primi semnalul si va executa rutina. In urma executiei, va fi marcat ca si terminat si se va planifica un nou thread.
 ### SCHEDULE
 Planifica urmatorul thread ce trebuie executat, tratand urmatoarele cazuri:
-* aaa
+* rdy == NULL --> coada e goala
+* prev == NULL --> nu exista niciun thread in executie
+* thread-ul a atins numarul maxim de executii permise --> se preempteaza in cazul in care thread-ul scos din ready are prioritatea mai mare sau egala decat cel din running; altfel, se reseteaza timpul si se continua executia
+* prioritatea thread-ului din ready este mai mare decat cea a thread-ului din running --> preeempt
+* altfel --> se continua executia
 
 
 
