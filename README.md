@@ -11,7 +11,7 @@ Prin implementarea planificatorului se simuleaza un scheduler preemptiv intr-un 
 
 ## Structs
 ### Thread struct
-`code()`
+```
 typedef struct my_thread {
 	enum state state;
 	pthread_t tid;
@@ -21,3 +21,4 @@ typedef struct my_thread {
 	unsigned int clk;
 	int waiting_io;
 } my_thread;
+```
