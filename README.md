@@ -53,8 +53,9 @@ Planifica urmatorul thread ce trebuie executat, tratand urmatoarele cazuri:
 * thread-ul a atins numarul maxim de executii permise --> se preempteaza in cazul in care thread-ul scos din ready are prioritatea mai mare sau egala decat cel din running; altfel, se reseteaza timpul si se continua executia
 * prioritatea thread-ului din ready este mai mare decat cea a thread-ului din running --> preeempt
 * altfel --> se continua executia
-
-
-
-
-
+### SO_WAIT 
+Opreste executia thread-ului si il trece in starea de asteptare a semnalului primit ca parametru. Se adauga in lista de waiting si se planifica urmatorul thread.
+### SO_SIGNAL 
+Trezeste toate thread-urile aflate in asteptarea semnalului primit ca parametru mutandu-le in coada ready.
+### ADD_RDY, GET_RDY
+Functii auxiliare pentru coada ready care adauga respectiv scot un element din coada (push / pop).
