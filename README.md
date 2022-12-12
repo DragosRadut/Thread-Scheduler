@@ -11,7 +11,7 @@ Prin implementarea planificatorului se simuleaza un scheduler preemptiv intr-un 
 
 ## Structs
 ### Thread struct
-' typedef struct my_thread {
+` typedef struct my_thread {
 	enum state state;
 	pthread_t tid;
 	unsigned int priority;
@@ -19,4 +19,4 @@ Prin implementarea planificatorului se simuleaza un scheduler preemptiv intr-un 
 	pthread_cond_t cond;
 	unsigned int clk;
 	int waiting_io;
-} my_thread; '
+} my_thread; `
