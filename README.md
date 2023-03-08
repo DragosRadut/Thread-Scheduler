@@ -1,13 +1,15 @@
 # Thread Scheduler
 
-## Descriere
-Prin implementarea planificatorului se simuleaza un scheduler preemptiv intr-un sistem uniprocesor bazat pe modelul Round Robin cu prioritati. Implementarea este realizata intr-o biblioteca partajata dinamica, ce exporta urmatoarele functii:
-* INIT - inițializează structurile interne ale planificatorului.
-* FORK - pornește un nou thread.
-* EXEC - simulează execuția unei instrucțiuni.
-* WAIT - așteaptă un eveniment/operație I/O.
-* SIGNAL - semnalează threadurile care așteaptă un eveniment/operație I/O.
-* END - distruge planificatorul și eliberează structurile alocate.
+## Description
+The entire project stands under the copyright of University Politehnica of Bucharest, Operating Systems 2022, being a graded assignment.
+The implamantation simulates a preemptive scheduler based on the Round Robin priority model, structured for an uniprocessor system. For a less exhaustive implamantation, priority is not considered like the UNIX standard model, but from one to five.
+Implementation is done in a shared dynamic library, exporting the following functions:
+* INIT - initializer for internal structs.
+* FORK - creates a new thread.
+* EXEC - simulates execution of an instruction.
+* WAIT - waits for an I/O operation.
+* SIGNAL - sends signal to I/O blocked threads.
+* END - destroys planner and frees structs.
 
 ## Structs
 ### Thread struct
@@ -36,26 +38,27 @@ typedef struct {
 ```
 
 ## Scheduler functions
+Each function firstly checks validity of parameters.
 Fiecare functie verifica intai corectitudinea parametrilor.
-` Planificarea are la baza utilizarea variabilelor de conditie. `
+` Planning is condition-variable based . `
 ### SO_INIT
-Initializeaza membrii structurii de scheduler, aloca memoria necesara si initializeaza mutex-ul. Se evita initializarea multipla.
+Structure initializer. Alocates memory and initializes mutex. Repeating this step is protected.
 ### SO_END
-Elibereaza memoria alocata anterior si asteapta terminarea tuturor thread-urilor.
+Frees memory and waits for all threads to finish execution.
 ### SO_FORK
-Porneste un nou thread, initializand membrii specifici structurii. Se foloseste pthread_create() impruna cu functia thread_start() care va executa rutina specifica fiecarui thread si va asigura planificarea. Thread-ul se adauga in lista all si in coada ready. Se noteaza executarea unei intructiuni (clk++ -> modificare adusa caller-ului functiei) si se apeleaza functia responsabila cu planificarea (schedule()).
+Starts a new thread, initializing struct specific members. Pthread_create() is used alongside thread_start() to execute thread specific routine and manage part of the planning. The thread is added in all list and ready queue. Instruction execution is managed (being noted on caller's end -> clk++). A function is called for further planning (schedule()).
 ### THREAD_START 
-Trece thread-ul in asteptarea semnalui de executie. Dupa ce va trece in starea RUN, va primi semnalul si va executa rutina. In urma executiei, va fi marcat ca si terminat si se va planifica un nou thread.
+Places the new thread waiting on execution signal. After changing its state to RUN, it will recive the signal and execute its routine. After execution, it becomes marked as terminated and a new thread will be planned.
 ### SCHEDULE
-Planifica urmatorul thread ce trebuie executat, tratand urmatoarele cazuri:
-* rdy == NULL --> coada e goala
-* prev == NULL --> nu exista niciun thread in executie
-* thread-ul a atins numarul maxim de executii permise --> se preempteaza in cazul in care thread-ul scos din ready are prioritatea mai mare sau egala decat cel din running; altfel, se reseteaza timpul si se continua executia
-* prioritatea thread-ului din ready este mai mare decat cea a thread-ului din running --> preeempt
-* altfel --> se continua executia
+Plans the thread to be executed, guided by the following cases:
+* rdy == NULL --> the queue is empty
+* prev == NULL --> no thread in execution
+* thread reached the maximum number of execution steps allowed --> it is preemted if the thread found in ready queue has higher or equal priority than the one in running; else, clk is reset and execution continues.
+* priority of the ready thread is greater than the one of running thread --> preemption
+* default --> continue execution
 ### SO_WAIT 
-Opreste executia thread-ului si il trece in starea de asteptare a semnalului primit ca parametru. Se adauga in lista de waiting si se planifica urmatorul thread.
+Thread execution is stoped changing its state to waiting on the signal given as param. Thread is added in waiting list and the next one si planned.
 ### SO_SIGNAL 
-Trezeste toate thread-urile aflate in asteptarea semnalului primit ca parametru mutandu-le in coada ready.
+All threads waiting on the signal given as param are awaken and moved to ready queue.
 ### ADD_RDY, GET_RDY
-Functii auxiliare pentru coada ready care adauga respectiv scot un element din coada (push / pop).
+Auxiliary functions for ready queue. Similar to classic push / pop.
