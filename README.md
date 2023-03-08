@@ -39,7 +39,6 @@ typedef struct {
 
 ## Scheduler functions
 Each function firstly checks validity of parameters.
-Fiecare functie verifica intai corectitudinea parametrilor.
 ` Planning is condition-variable based . `
 ### SO_INIT
 Structure initializer. Alocates memory and initializes mutex. Repeating this step is protected.
