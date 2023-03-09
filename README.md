@@ -2,7 +2,7 @@
 
 ## Description
 The entire project stands under the copyright of University Politehnica of Bucharest, Operating Systems 2022, being a graded assignment.
-The implemantation simulates a preemptive scheduler based on the Round Robin priority model, structured for an uniprocessor system. For a less exhaustive implamantation, priority is not considered like the UNIX standard model, but from one to five.
+The implementation simulates a preemptive scheduler based on the Round Robin priority model, structured for an uniprocessor system. For a less exhaustive implementation, priority is not considered like the UNIX standard model, but from one to five.
 Implementation is done in a shared dynamic library, exporting the following functions:
 * INIT - initializer for internal structs.
 * FORK - creates a new thread.
